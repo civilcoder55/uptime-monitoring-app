@@ -1,11 +1,15 @@
-import express from "express";
-import logger from "./logger";
+/**
+ * Load env variables
+ */
 import * as dotenv from "dotenv";
+dotenv.config();
 
 /**
- * load env variables
+ * Modules imports
  */
-dotenv.config();
+import express from "express";
+import logger from "./logger";
+import * as db from "./database";
 
 /**
  * init server
@@ -18,8 +22,9 @@ const app = express();
 const APP_PORT: number = parseInt(process.env.APP_PORT as string, 10);
 
 /**
- * init database
+ * connect to database
  */
+db.connect();
 
 /**
  *  app middlewares
@@ -34,5 +39,5 @@ app.use(express.json());
  * start application
  */
 app.listen(APP_PORT || 3003, () => {
-  logger.info(`Server up and running on port ${APP_PORT}`);
+  logger.info(`Server up and running on port ${APP_PORT}.`);
 });
