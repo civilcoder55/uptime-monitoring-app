@@ -1,7 +1,7 @@
-import logger from "pino";
+import pino from "pino";
 import dayjs from "dayjs";
 
-const _logger = logger({
+const logger = pino({
   transport: {
     target: "pino-pretty",
   },
@@ -11,4 +11,4 @@ const _logger = logger({
   timestamp: () => `,"time":"${dayjs().format()}"`,
 });
 
-export default _logger;
+export default logger;
