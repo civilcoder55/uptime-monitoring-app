@@ -10,7 +10,7 @@ dotenv.config();
 import express from "express";
 import logger from "./logger";
 import * as db from "./database";
-
+import routes from "./routes";
 /**
  * init server
  */
@@ -32,8 +32,9 @@ db.connect();
 app.use(express.json());
 
 /**
- * init routers
+ * Register app routes
  */
+app.use("/api/v1", routes);
 
 /**
  * start application
