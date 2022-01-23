@@ -11,6 +11,7 @@ import express from "express";
 import logger from "./logger";
 import * as db from "./database";
 import routes from "./routes";
+import refresherMiddleware from "./middlewares/refresher.middleware";
 /**
  * init server
  */
@@ -30,6 +31,7 @@ db.connect();
  *  app middlewares
  */
 app.use(express.json());
+app.use(refresherMiddleware);
 
 /**
  * Register app routes
