@@ -10,6 +10,9 @@ export default (schema: AnySchema) =>
         params: req.params,
       });
 
+      // remove unknown fields and reassign to request body object
+      req.body = schema.cast({ body: req.body }, { stripUnknown: true })?.body;
+
       return next();
     } catch (error: any) {
       return res.status(400).json({ message: error.errors[0] });
