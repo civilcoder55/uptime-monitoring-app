@@ -1,7 +1,7 @@
 ## todo 
 
-- [ ] Sign-up with email verification.
-- [ ] Stateless authentication using JWT.
+- [x] Sign-up with email verification.
+- [x] Stateless authentication using JWT.
 - [ ] Users can create a check to monitor a given URL if it is up or down.
 - [ ] Users can edit, pause, or delete their checks if needed.
 - [ ] Users may receive a notification on a webhook URL by sending HTTP POST request whenever a check goes down or up.
