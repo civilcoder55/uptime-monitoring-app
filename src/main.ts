@@ -40,5 +40,5 @@ app.use("/api/v1", routes);
  * start application
  */
 app.listen(APP_PORT || 3003, () => {
-  logger.info(`Server up and running on port ${APP_PORT}.`);
+  logger.info(`[*] Server running on port ${APP_PORT}.`);
 });
