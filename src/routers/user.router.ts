@@ -1,12 +1,12 @@
 import { Router } from "express";
 import { createUserSchema, verifyUserSchema, resendVerificationSchema } from "../schemas/user.schema";
-import validator from "../middlewares/validator.middleware";
+import validatorMiddleware from "../middlewares/validator.middleware";
 import * as UserController from "../controllers/user.controller";
 
 const router = Router();
 
-router.post("/user", validator(createUserSchema), UserController.createUser);
-router.post("/user/verify/resend", validator(resendVerificationSchema), UserController.resendVerification);
-router.post("/user/verify", validator(verifyUserSchema), UserController.verifiyUser);
+router.post("/user", validatorMiddleware(createUserSchema), UserController.createUser);
+router.post("/user/verify/resend", validatorMiddleware(resendVerificationSchema), UserController.resendVerification);
+router.post("/user/verify", validatorMiddleware(verifyUserSchema), UserController.verifiyUser);
 
 export default router;

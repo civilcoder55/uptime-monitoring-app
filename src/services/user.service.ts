@@ -1,24 +1,21 @@
 import { UserDocument } from "../types/user.type";
-import logger from "../logger";
-import User from "../models/user.model";
+import UserModel from "../models/user.model";
 import { randomBytes } from "crypto";
 
-export const createUser = async function (userData: UserDocument) {
-  try {
-    userData.verificationToken = await generateToken();
-    userData.verificationTokenExp = new Date(Date.now() + 60 * 60 * 1000); // now + 1 hour
-    userData.verified = false;
-    return await User.create(userData);
-  } catch (error: any) {
-    logger.error(error);
-    if (error.code === 11000) {
-      throw {
-        statusCode: 409,
-        message: "User email already exists.",
-      };
-    }
+export async function createUser(userData: UserDocument): Promise<UserDocument> {
+  const sameUser = await UserModel.findOne({ email: userData.email });
+
+  if (sameUser) {
+    throw {
+      statusCode: 409,
+      message: "User email already exists.",
+    };
   }
-};
+
+  userData.verificationToken = await generateToken();
+  userData.verificationTokenExp = new Date(Date.now() + 60 * 60 * 1000); // now + 1 hour
+  return await UserModel.create(userData);
+}
 
 const generateToken = async (): Promise<string> => {
   return new Promise((resolve) => {
@@ -28,8 +25,8 @@ const generateToken = async (): Promise<string> => {
   });
 };
 
-export const verifiyUser = async function (email: string, token: string) {
-  const user = await User.findOne({ email });
+export async function verifiyUser(email: string, token: string): Promise<void> {
+  const user = await UserModel.findOne({ email });
   if (!user) {
     throw {
       statusCode: 404,
@@ -54,11 +51,11 @@ export const verifiyUser = async function (email: string, token: string) {
   user.verificationToken = null;
   user.verificationTokenExp = null;
 
-  user.save();
-};
+  await user.save();
+}
 
-export const resendVerification = async function (email: string) {
-  const user = await User.findOne({ email });
+export async function resendVerification(email: string): Promise<void> {
+  const user = await UserModel.findOne({ email });
   if (user && !user.verified) {
     user.verificationToken = await generateToken();
     user.verificationTokenExp = new Date(Date.now() + 60 * 60 * 1000); // now + 1 hour
@@ -66,4 +63,4 @@ export const resendVerification = async function (email: string) {
 
     //send email
   }
-};
+}
