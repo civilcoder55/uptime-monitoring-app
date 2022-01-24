@@ -1,6 +1,7 @@
 import { Router } from "express";
 import UserRouter from "./routers/user.router";
 import SessionRouter from "./routers/session.router";
+import CheckRouter from "./routers/check.router";
 
 const router = Router();
 
@@ -9,5 +10,6 @@ const router = Router();
  */
 router.use(UserRouter);
 router.use(SessionRouter);
+router.use(CheckRouter);
 
 export default router;
