@@ -1,6 +1,6 @@
 import { UserDocument } from "../types/user.type";
 import UserModel from "../models/user.model";
-import { randomBytes } from "crypto";
+import { generateToken } from "../utils/helper.utils";
 
 export async function createUser(userData: UserDocument): Promise<UserDocument> {
   const sameUser = await UserModel.findOne({ email: userData.email });
@@ -17,13 +17,7 @@ export async function createUser(userData: UserDocument): Promise<UserDocument> 
   return await UserModel.create(userData);
 }
 
-const generateToken = async (): Promise<string> => {
-  return new Promise((resolve) => {
-    randomBytes(48, function (err, buffer) {
-      resolve(buffer.toString("hex"));
-    });
-  });
-};
+
 
 export async function verifiyUser(email: string, token: string): Promise<void> {
   const user = await UserModel.findOne({ email });
