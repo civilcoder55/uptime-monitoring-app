@@ -19,6 +19,7 @@ export class TcpClient implements IClient {
           result.responseTime = totalTime[0] * 1000 + totalTime[1] / 1000000;
         }
         result.error = true;
+        result.errorMessage = "failed to connect or timeout";
         result.timeout = true;
         resolve(result);
       });
