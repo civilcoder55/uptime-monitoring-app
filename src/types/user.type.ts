@@ -5,7 +5,7 @@ export interface UserDocument extends mongoose.Document {
   name: string;
   password: string;
   verified: boolean;
-  verificationToken: string | null;
+  verificationToken: string;
   verificationTokenExp: Date | null;
   createdAt: Date;
   updatedAt: Date;
