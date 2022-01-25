@@ -64,7 +64,7 @@ AcJxLm7O6d2pn4K3ZEQQR8p1F0mTXGhOSAeMXZGQ+/NMxQzShAssa+ZlIUciq+uU
 Y4+R55+/jSQnOGP5W+6jP6Mc2ahYuR1jtAViy4+Gnq7SIwpv6Eg2MRfu747ics84
 7j7fwCzWjH4hoQk7jqJuzU8CAwEAAQ==
 -----END PUBLIC KEY-----`,
-
+  ACCESS_TOKEN_TTL: process.env.ACCESS_TOKEN_TTL as string,
   REFRESH_TOKEN_PRIVATE_KEY: `-----BEGIN RSA PRIVATE KEY-----
 MIIJKQIBAAKCAgEAugjc70p1T93Rz2LzaLgQecphphNZ3Plm2twBn6Gzuf5cuCdh
 6g2S/S+feikcWd42JYLSoJkwlZUY7w8TrEFn4cjEyDGUYN471OrwAVKpSEN/RQPV
@@ -130,4 +130,15 @@ EFI1uokcNMg/ZMuKKShMGCLEZK6o4mwjsjDGf46im/MVe83AzHUHZP7BlAzgsNBz
 HNPuWDB8zq3zic9D48DAir4Qik4+TEwodhP0nbTSpgFix1xUbXygEiPKAXP8vqXH
 nHf0GnVw9uewRElNLJUp2aUCAwEAAQ==
 -----END PUBLIC KEY-----`,
+
+  REFRESH_TOKEN_TTL: process.env.REFRESH_TOKEN_TTL as string,
+
+  MAILER_HOST: process.env.MAILER_HOST as string,
+  MAILER_PORT: parseInt(process.env.MAILER_PORT as string) as number,
+  MAILER_USER: process.env.MAILER_USER as string,
+  MAILER_PASSWORD: process.env.MAILER_PASSWORD as string,
+  MAILER_FROM: process.env.MAILER_FROM as string,
+
+  MONGO_URI: process.env.MONGO_URI as string,
+  APP_PORT: parseInt(process.env.APP_PORT as string),
 };
