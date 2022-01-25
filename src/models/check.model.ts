@@ -4,8 +4,10 @@ import { CheckDocument } from "../types/check.type";
 const CheckSchema = new mongoose.Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, index: true },
+    email: { type: String },
     name: { type: String, required: true },
-    url: { type: String, required: true },
+    host: { type: String, required: true },
+    port: { type: Number },
     protocol: { type: String },
     path: { type: String },
     webhook: { type: String },
@@ -16,9 +18,34 @@ const CheckSchema = new mongoose.Schema(
     asserts: { type: Object },
     tags: [String],
     ignoreSSL: { type: Boolean, default: false },
+    paused: { type: Boolean, default: false },
+    status: { type: String, default: false },
+    availability: { type: Number, default: false },
+    outages: { type: Number, default: false },
+    downtime: { type: Number, default: false },
+    uptime: { type: Number, default: false },
+    avgResponseTime: { type: Number, default: false },
+    lastCheck: { type: Date },
+    totalRequests: { type: Number, default: 0 },
+    totalDowns: { type: Number, default: 0 },
   },
   { timestamps: true }
 );
+
+CheckSchema.pre("save", async function (next) {
+  // double check for correct protocol
+  if (this.protocol !== "tcp") {
+    this.protocol = this.host.startsWith("https") ? "https" : "http";
+    this.host = this.host.replace("https://", "");
+    this.host = this.host.replace("http://", "");
+    if (this.host[this.host.length - 1] === "/") this.host = this.host.slice(0, -1); //strip path "/" from end
+  }
+  next();
+});
+
+CheckSchema.methods.reload = async function () {
+  return this.model("Check").findById(this._id);
+};
 
 CheckSchema.methods.toJSON = function () {
   const session = this.toObject();
