@@ -12,35 +12,67 @@ import logger from "./logger";
 import * as db from "./database";
 import routes from "./routes";
 import refresherMiddleware from "./middlewares/refresher.middleware";
-/**
- * init server
- */
-const app = express();
-
-/**
- * App Variables
- */
-const APP_PORT: number = parseInt(process.env.APP_PORT as string, 10);
+import cluster from "cluster";
+import monitorManager from "./libs/monitor";
+import config from "./config";
 
 /**
  * connect to database
  */
 db.connect();
 
-/**
- *  app middlewares
- */
-app.use(express.json());
-app.use(refresherMiddleware);
+if (cluster.isPrimary) {
+  /**
+   * init server
+   */
+  const app = express();
 
-/**
- * Register app routes
- */
-app.use("/api/v1", routes);
+  /**
+   * App Variables
+   */
+  const APP_PORT: number = config.APP_PORT;
 
-/**
- * start application
- */
-app.listen(APP_PORT || 3003, () => {
-  logger.info(`[*] Server running on port ${APP_PORT}.`);
-});
+  /**
+   *  app middlewares
+   */
+  app.use(express.json());
+  app.use(refresherMiddleware);
+
+  /**
+   * Register app routes
+   */
+  app.use("/api/v1", routes);
+  /**
+   * start server
+   */
+  app.listen(APP_PORT || 3003, () => {
+    logger.info(`[*] Server running on port ${APP_PORT} on pid ${process.pid}.`);
+  });
+
+  // Fork one worker for monitoring service.
+  const worker = cluster.fork();
+
+  // make worker global in express app
+  app.set("worker", worker);
+
+  cluster.on("exit", (worker) => {
+    console.log(`worker ${worker.process.pid} died`);
+  });
+} else {
+  logger.info(`[*] Monitor running on pid ${process.pid}`);
+  monitorManager.start();
+
+  // register custom event and listener between master process (api) and worker process (monitor) to handle check changes by users
+  process.on("message", function (msg: { type: string; data: any }) {
+    if (msg.type == "checkCreated") {
+      monitorManager.checkCreated(msg.data.id);
+    }
+    if (msg.type == "checkUpdated") {
+      monitorManager.checkUpdated(msg.data.id);
+    }
+
+    if (msg.type == "checkDeleted") {
+      monitorManager.checkDeleted(msg.data.id);
+    }
+  });
+}
