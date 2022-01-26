@@ -19,9 +19,12 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+    - name: create env file
+      run: |
+        touch .env
+        echo ACCESS_TOKEN_TTL='10m' >> .env
     - run: npm ci
     - run: npm test
     - run: npm run build
       env:
-        ACCESS_TOKEN_TTL: '10m'
         CI: true
