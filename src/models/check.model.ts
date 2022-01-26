@@ -21,13 +21,12 @@ const CheckSchema = new mongoose.Schema(
     paused: { type: Boolean, default: false },
     status: { type: String, default: false },
     availability: { type: Number, default: false },
-    outages: { type: Number, default: false },
+    outages: { type: Number, default: 0 },
     downtime: { type: Number, default: false },
     uptime: { type: Number, default: false },
     avgResponseTime: { type: Number, default: false },
     lastCheck: { type: Date },
     totalRequests: { type: Number, default: 0 },
-    totalDowns: { type: Number, default: 0 },
   },
   { timestamps: true }
 );
@@ -48,10 +47,10 @@ CheckSchema.methods.reload = async function () {
 };
 
 CheckSchema.methods.toJSON = function () {
-  const session = this.toObject();
-  delete session.__v;
-  delete session.user;
-  return session;
+  const check = this.toObject();
+  delete check.__v;
+  delete check.user;
+  return check;
 };
 
 export default mongoose.model<CheckDocument>("Check", CheckSchema);

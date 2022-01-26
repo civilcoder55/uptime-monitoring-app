@@ -16,9 +16,8 @@ export class Monitor extends EventEmitter {
 
   private status!: string;
   private totalRequests!: number;
-  private totalDowns!: number;
+  private outages!: number;
   private lastCheck!: Date;
-  private lastResponse = {};
 
   private client: Client;
   private check: CheckDocument;
@@ -61,7 +60,7 @@ export class Monitor extends EventEmitter {
     this.threshold = check.threshold;
 
     this.totalRequests = check.totalRequests;
-    this.totalDowns = check.totalDowns;
+    this.outages = check.outages;
     this.status = check.status;
     this.lastCheck = check.lastCheck;
   }
@@ -122,9 +121,9 @@ export class Monitor extends EventEmitter {
    */
 
   private handleDown(response: any): void {
-    this.totalDowns += 1;
+    this.outages += 1;
     if (this.status == "up") {
-      if (this.totalDowns > this.threshold) {
+      if (this.outages > this.threshold) {
         this.emit("alert", this.getAlert(response, AlertTypes.DOWN));
       }
       logger.info(`[^] Host: ${this.options.host} status has been changed from up to down`);
@@ -149,7 +148,6 @@ export class Monitor extends EventEmitter {
     try {
       const client = this.client.getProviderByProtocol(this.options.protocol);
       const response = await client.ping(this.options);
-      this.lastResponse = response;
       this.lastCheck = new Date();
       this.totalRequests += 1;
 
@@ -167,15 +165,25 @@ export class Monitor extends EventEmitter {
   }
 
   /**
-   *  Private method to handle check updating and create new ping document inside database
+   *  Private method to handle check report details updating and create new ping document inside database
    * @param {IClientResponse} response monitor response object to save as ping
    * @returns {void}
    */
   private updateCheck(response: IClientResponse): void {
-    this.check.totalRequests = this.totalRequests;
-    this.check.lastCheck = this.lastCheck;
     this.check.status = this.status;
-    this.check.totalDowns = this.totalDowns;
+
+    this.check.outages = this.outages;
+    this.check.availability = ((this.totalRequests - this.outages) / this.totalRequests) * 100;
+    this.check.lastCheck = this.lastCheck;
+
+    if (this.status == "up") {
+      this.check.uptime += this.interval;
+      this.check.avgResponseTime =
+        (response.responseTime + this.check.avgResponseTime * this.check.totalRequests) / this.totalRequests;
+    } else {
+      this.check.downtime += this.interval;
+    }
+    this.check.totalRequests = this.totalRequests;
     this.check.save();
 
     PingModel.create({ check: this.check._id, ...response });
