@@ -1,0 +1,1047 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Availability Monitoring API",
+    "description": "Demo API for availability and uptime monitoring.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api/v1",
+      "description": "local API Server"
+    }
+  ],
+  "paths": {
+    "/user": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Create new user account",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["name", "email", "password", "passwordConfirmation"],
+                "properties": {
+                  "name": {
+                    "description": "User name",
+                    "type": "string",
+                    "example": "john doe"
+                  },
+                  "email": {
+                    "description": "User email",
+                    "type": "string",
+                    "format": "email",
+                    "example": "john@test.com"
+                  },
+                  "password": {
+                    "description": "User password",
+                    "type": "string",
+                    "format": "password",
+                    "example": "Password@123"
+                  },
+                  "passwordConfirmation": {
+                    "description": "User password confirmation",
+                    "type": "string",
+                    "format": "password",
+                    "example": "Password@123"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/user/verify": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Verify user account",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["email", "token"],
+                "properties": {
+                  "email": {
+                    "description": "User email",
+                    "type": "string",
+                    "format": "email",
+                    "example": "john@test.com"
+                  },
+                  "token": {
+                    "description": "User verification token",
+                    "type": "string",
+                    "example": "a92b358289eec25977acf4d6c2065f5246211b46d922052005693b221814d2a0f49580b0b12919497a63c305f08a2c26"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "User verified successfully."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/user/verify/resend": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Resend user account verification email",
+        "description": "Returns new user data",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["email"],
+                "properties": {
+                  "email": {
+                    "description": "User email",
+                    "type": "string",
+                    "format": "email",
+                    "example": "john@test.com"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "If email is valid, verification email will be sent to it."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/sessions": {
+      "post": {
+        "tags": ["Sessions"],
+        "summary": "Create new session [login]",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["email", "password"],
+                "properties": {
+                  "email": {
+                    "description": "User email",
+                    "type": "string",
+                    "format": "email",
+                    "example": "john@test.com"
+                  },
+                  "password": {
+                    "description": "User password",
+                    "type": "string",
+                    "format": "password",
+                    "example": "Password@123"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Session created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "accessToken": {
+                          "type": "string"
+                        },
+                        "refreshToken": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Sessions"],
+        "summary": "Get all user sessions",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Session"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["Sessions"],
+        "summary": "Delete current session [logout]",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Session deleted successfully."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/sessions/all": {
+      "delete": {
+        "tags": ["Sessions"],
+        "summary": "Delete all user session [logout from all devices]",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "All sessions deleted successfully."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/checks": {
+      "get": {
+        "tags": ["Checks"],
+        "summary": "Get list of user checks",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Check"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": ["Checks"],
+        "summary": "Create new check",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Check"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/checks/{id}": {
+      "get": {
+        "tags": ["Checks"],
+        "summary": "Get check data",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Check id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Check"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "put": {
+        "tags": ["Checks"],
+        "summary": "Update check data",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Check id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Check"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["Checks"],
+        "summary": "Delete check",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Check id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Check deleted successfully."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/checks/{id}/toggle": {
+      "patch": {
+        "tags": ["Checks"],
+        "summary": "Toggle check monitoring pause/resume",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Check id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Check monitoring paused/resumed successfully."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/checks/{id}/report": {
+      "get": {
+        "tags": ["Checks"],
+        "summary": "Get check monitoring report",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Check id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Report"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "title": "UserModel",
+        "properties": {
+          "_id": {
+            "description": "User id",
+            "type": "string",
+            "example": "61eebb148bf55b4ca50db549"
+          },
+          "name": {
+            "description": "User name",
+            "type": "string",
+            "example": "john doe"
+          },
+          "email": {
+            "description": "User email",
+            "type": "string",
+            "format": "email",
+            "example": "john@test.com"
+          },
+          "verified": {
+            "description": "User verification status",
+            "type": "boolean",
+            "example": "false"
+          },
+          "createdAt": {
+            "description": "User creation date",
+            "type": "string",
+            "example": "2022-01-24T14:43:32.337Z"
+          },
+          "updatedAt": {
+            "description": "User update date",
+            "type": "string",
+            "example": "2022-01-24T14:43:32.337Z"
+          }
+        },
+        "type": "object"
+      },
+      "Session": {
+        "properties": {
+          "_id": {
+            "description": "Session id",
+            "type": "string",
+            "example": "61eebb148bf55b4ca50db549"
+          },
+          "userAgent": {
+            "description": "Session device user agent",
+            "type": "string",
+            "example": "Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion"
+          },
+          "ip": {
+            "description": "Session device ip address",
+            "type": "string",
+            "example": "127.0.0.1"
+          },
+          "createdAt": {
+            "description": "Session creation date",
+            "type": "string",
+            "example": "2022-01-24T14:43:32.337Z"
+          }
+        },
+        "type": "object"
+      },
+      "Check": {
+        "title": "CheckModel",
+        "properties": {
+          "name": {
+            "title": "name",
+            "description": "The name of the check.",
+            "type": "string",
+            "example": "my tcp connection"
+          },
+          "host": {
+            "title": "host",
+            "description": "The host to be monitored",
+            "type": "string",
+            "example": "192.168.1.1"
+          },
+          "protocol": {
+            "title": "protocol",
+            "description": "The resource protocol name HTTP, HTTPS, or TCP.",
+            "type": "string",
+            "example": "tcp"
+          },
+          "port": {
+            "title": "port",
+            "description": "The server port number (optional).",
+            "type": "integer",
+            "example": 80
+          },
+          "path": {
+            "title": "path",
+            "description": " A specific path to be monitored (optional).",
+            "type": "string",
+            "example": "/"
+          },
+          "timeout": {
+            "title": "timeout",
+            "description": "(defaults to 5 seconds) - The timeout of the polling request (optional).",
+            "type": "integer",
+            "example": 10
+          },
+          "interval": {
+            "title": "interval",
+            "description": "(defaults to 10 minutes) - The time interval for polling requests (optional).",
+            "type": "integer",
+            "example": 5
+          },
+          "threshold": {
+            "title": "threshold",
+            "description": "(defaults to 1 failure) - The threshold of failed requests that will create an alert (optional).",
+            "type": "integer",
+            "example": 3
+          },
+          "ignoreSSL": {
+            "title": "ignoreSSL",
+            "description": "A flag to ignore broken/expired SSL certificates in case of using the HTTPS protocol.",
+            "type": "boolean",
+            "example": true
+          },
+          "tags": {
+            "title": "tags",
+            "description": "A list of the check tags (optional).",
+            "type": "array",
+            "example": ["tcps"]
+          },
+          "asserts": {
+            "title": "asserts",
+            "description": "The response assertion to be used on the polling response (optional).",
+            "type": "object",
+            "example": { "statusCode": 200 }
+          },
+          "httpHeaders": {
+            "title": "httpHeaders",
+            "description": "A list of key/value pairs custom HTTP headers to be sent with the polling request (optional).",
+            "type": "object",
+            "example": { "x-user": 5 }
+          },
+          "webhook": {
+            "title": "webhook",
+            "description": " A webhook URL to receive a notification on (optional).",
+            "type": "string",
+            "example": "https://mywebhook.com/down"
+          }
+        },
+        "type": "object"
+      },
+      "Report": {
+        "title": "ReportModel",
+        "properties": {
+          "status": {
+            "title": "status",
+            "description": " The current status of the host up/down.",
+            "type": "string",
+            "example": "up"
+          },
+          "availability": {
+            "title": "availability",
+            "description": "A percentage of the host availability.",
+            "type": "number",
+            "example": 90
+          },
+          "outages": {
+            "title": "outages",
+            "description": "The total number of host downtimes.",
+            "type": "integer",
+            "example": 10
+          },
+          "downtime": {
+            "title": "downtime",
+            "description": "The total time, in seconds, of the host downtime.",
+            "type": "integer",
+            "example": 600
+          },
+          "uptime": {
+            "title": "uptime",
+            "description": "The total time, in seconds, of the host uptime.",
+            "type": "integer",
+            "example": 5400
+          },
+          "avgResponseTime": {
+            "title": "avgResponseTime",
+            "description": "The average response time for the URL.",
+            "type": "number",
+            "example": 5.35
+          },
+          "lastCheck": {
+            "title": "lastCheck",
+            "description": "The datetime of last host check.",
+            "type": "string",
+            "example": "2022-01-26T09:24:14.323Z"
+          },
+          "history": {
+            "title": "history",
+            "description": "Timestamped logs of the polling requests.",
+            "type": "array",
+            "example": [
+              {
+                "error": false,
+                "timeout": false,
+                "responseTime": 5.512336,
+                "createdAt": "2022-01-26T09:21:14.319Z"
+              }
+            ]
+          }
+        }
+      },
+      "CheckRequest": {
+        "required": ["name", "protocol", "host"],
+        "properties": {
+          "name": {
+            "title": "name",
+            "description": "The name of the check.",
+            "type": "string",
+            "example": "my tcp connection"
+          },
+          "host": {
+            "title": "host",
+            "description": "The host to be monitored",
+            "type": "string",
+            "example": "192.168.1.1"
+          },
+          "protocol": {
+            "title": "protocol",
+            "description": "The resource protocol name HTTP, HTTPS, or TCP.",
+            "type": "string",
+            "example": "tcp"
+          },
+          "port": {
+            "title": "port",
+            "description": "The server port number (optional).",
+            "type": "integer",
+            "example": 80
+          },
+          "path": {
+            "title": "path",
+            "description": " A specific path to be monitored (optional).",
+            "type": "string",
+            "example": "/"
+          },
+          "timeout": {
+            "title": "timeout",
+            "description": "(defaults to 5 seconds) - The timeout of the polling request (optional).",
+            "type": "integer",
+            "example": 10
+          },
+          "interval": {
+            "title": "interval",
+            "description": "(defaults to 10 minutes) - The time interval for polling requests (optional).",
+            "type": "integer",
+            "example": 60
+          },
+          "threshold": {
+            "title": "threshold",
+            "description": "(defaults to 1 failure) - The threshold of failed requests that will create an alert (optional).",
+            "type": "integer",
+            "example": 3
+          },
+          "ignoreSSL": {
+            "title": "ignoreSSL",
+            "description": "A flag to ignore broken/expired SSL certificates in case of using the HTTPS protocol.",
+            "type": "boolean",
+            "example": true
+          },
+          "tags": {
+            "title": "tags",
+            "description": "A list of the check tags (optional).",
+            "type": "array",
+            "example": ["tcps"]
+          },
+          "asserts": {
+            "title": "asserts",
+            "description": "The response assertion to be used on the polling response (optional).",
+            "type": "object",
+            "example": { "statusCode": 200 }
+          },
+          "httpHeaders": {
+            "title": "httpHeaders",
+            "description": "A list of key/value pairs custom HTTP headers to be sent with the polling request (optional).",
+            "type": "object",
+            "example": { "x-user": 5 }
+          },
+          "webhook": {
+            "title": "webhook",
+            "description": " A webhook URL to receive a notification on (optional).",
+            "type": "string",
+            "example": "https://mywebhook.com/down"
+          }
+        },
+        "type": "object"
+      }
+    },
+    "responses": {
+      "400": {
+        "description": "Bad request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "some field is required."
+                }
+              }
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "Not found resource",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Resource not found."
+                }
+              }
+            }
+          }
+        }
+      },
+      "401": {
+        "description": "Unauthorized request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Unauthorized request."
+                }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "internal server error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Internal server error."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
