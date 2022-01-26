@@ -24,6 +24,11 @@ export class Monitor extends EventEmitter {
   private check: CheckDocument;
   private intervalHandler: NodeJS.Timer | null = null;
 
+  /**
+   * Monitor class constructor
+   * @param {CheckDocument} check check document you need to monitor
+   * @param {Client} client client instance to manage polling requests
+   */
   constructor(check: CheckDocument, client: Client) {
     super();
     this.initData(check);
@@ -32,7 +37,12 @@ export class Monitor extends EventEmitter {
     this.registerEvents();
   }
 
-  private initData(check: CheckDocument) {
+  /**
+   * Private method to assign check data to monitor instance
+   * @param {CheckDocument} check check document you need to monitor
+   * @returns {void}
+   */
+  private initData(check: CheckDocument): void {
     this.options = {
       host: check.host,
       protocol: check.protocol,
@@ -56,7 +66,11 @@ export class Monitor extends EventEmitter {
     this.lastCheck = check.lastCheck;
   }
 
-  async updateData() {
+  /**
+   *  Method to handle re-init monitor instance when check get updated
+   * @returns {Promise<void>}
+   */
+  async updateData(): Promise<void> {
     // stop monitoring
     this.stop();
 
@@ -70,60 +84,94 @@ export class Monitor extends EventEmitter {
     this.start();
   }
 
-  private registerEvents() {
+  /**
+   *  Private method to register monitor events handlers
+   * @returns {void}
+   */
+  private registerEvents(): void {
     this.on("start", this.handleStart);
     this.on("up", this.handleUp);
     this.on("down", this.handleDown);
     this.on("stop", this.handleStop);
-    this.on("alert", () => false);
   }
 
-  private handleStart() {
-    logger.info("Host " + this.options.host + " polling starts");
+  /**
+   *  Private method to handle start event
+   * @returns {void}
+   */
+  private handleStart(): void {
+    logger.info(`[^] Host: ${this.options.host} polling has been started`);
   }
 
-  private handleUp() {
+  /**
+   *  Private method to handle up event
+   * @returns {void}
+   */
+  private handleUp(response: any): void {
     if (this.status == "down") {
-      this.emit("alert", this.getAlert(AlertTypes.UP));
-      logger.info("Host " + this.options.host + " goes up");
+      this.emit("alert", this.getAlert(response, AlertTypes.UP));
+      logger.info(`[^] Host: ${this.options.host} status has been changed from down to up`);
     }
 
     this.status = "up";
   }
 
-  private handleDown() {
+  /**
+   *  Private method to handle down event
+   * @returns {void}
+   */
+
+  private handleDown(response: any): void {
+    this.totalDowns += 1;
     if (this.status == "up") {
       if (this.totalDowns > this.threshold) {
-        this.emit("alert", this.getAlert(AlertTypes.DOWN));
+        this.emit("alert", this.getAlert(response, AlertTypes.DOWN));
       }
-      logger.info("Host " + this.options.host + " goes down");
+      logger.info(`[^] Host: ${this.options.host} status has been changed from up to down`);
     }
-    this.totalDowns += 1;
     this.status = "down";
   }
 
-  private handleStop() {
-    logger.info("Host " + this.options.host + " polling stopped");
+  /**
+   *  Private method to handle stop event
+   * @returns {void}
+   */
+  private handleStop(): void {
+    logger.info(`[^] Host: ${this.options.host} polling has been stopped`);
   }
 
-  private async handler() {
-    logger.info("polling host " + this.options.host);
-    const client = this.client.getProviderByProtocol(this.options.protocol);
-    const response = await client.ping(this.options);
-    this.lastResponse = response;
-    this.lastCheck = new Date();
-    this.totalRequests += 1;
+  /**
+   *  Private method to handle monitoring process and passed as callback for setInterval
+   * @returns {Promise<void>}
+   */
+  private async handler(): Promise<void> {
+    logger.info(`[^] New poll to host: ${this.options.host}`);
+    try {
+      const client = this.client.getProviderByProtocol(this.options.protocol);
+      const response = await client.ping(this.options);
+      this.lastResponse = response;
+      this.lastCheck = new Date();
+      this.totalRequests += 1;
 
-    if (response.error || (response.statusCode && response.statusCode != this.asserts?.statusCode)) {
+      if (response.error || (response.statusCode && response.statusCode != this.asserts?.statusCode)) {
+        this.emit("down", response);
+      } else {
+        this.emit("up", response);
+      }
+
+      this.updateCheck(response);
+    } catch (error) {
       this.emit("down");
-    } else {
-      this.emit("up");
+      logger.error(error, "[x] Server error");
     }
-
-    this.updateCheck(response);
   }
 
-  private updateCheck(response: IClientResponse) {
+  /**
+   *  Private method to handle check updating and create new ping document inside database
+   * @param {IClientResponse} response monitor response object to save as ping
+   * @returns {void}
+   */
+  private updateCheck(response: IClientResponse): void {
     this.check.totalRequests = this.totalRequests;
     this.check.lastCheck = this.lastCheck;
     this.check.status = this.status;
@@ -133,16 +181,27 @@ export class Monitor extends EventEmitter {
     PingModel.create({ check: this.check._id, ...response });
   }
 
-  private getAlert(type: AlertTypes) {
-    const host = this.options.protocol == "tcp" ? `${this.options.host}:${this.options.port}` : this.options.host;
+  /**
+   *  Private method to generate alert object for notification manager to consume
+   * @param {AlertTypes} type alert type "up" or "down"
+   * @returns {{ host: string; response: any; type: AlertTypes }}
+   */
+  private getAlert(response: any, type: AlertTypes): { host: string; response: any; type: AlertTypes } {
+    const host: string =
+      this.options.protocol == "tcp" ? `${this.options.host}:${this.options.port}` : this.options.host;
     return {
       host,
-      response: this.lastResponse,
+      response,
       type,
     };
   }
 
-  start() {
+  /**
+   *  Method to start monitoring
+   * @returns {void}
+   */
+
+  start(): void {
     if (!this.paused) {
       this.emit("start");
       this.handler();
@@ -150,7 +209,11 @@ export class Monitor extends EventEmitter {
     }
   }
 
-  stop() {
+  /**
+   *  Method to stop monitoring
+   * @returns {void}
+   */
+  stop(): void {
     if (this.intervalHandler) {
       clearInterval(this.intervalHandler);
       this.intervalHandler = null;
