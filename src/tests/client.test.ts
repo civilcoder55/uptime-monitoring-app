@@ -105,7 +105,3 @@ describe("https client provider", () => {
     expect(response.responseTime).toBeLessThan(6);
   });
 });
-
-afterAll((done) => {
-  done();
-});
