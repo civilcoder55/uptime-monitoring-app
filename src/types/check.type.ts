@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { PingDocument } from "./ping.type";
 import { UserDocument } from "./user.type";
 
 export interface CheckDocument extends mongoose.Document {
@@ -26,8 +27,18 @@ export interface CheckDocument extends mongoose.Document {
   avgResponseTime: number;
   lastCheck: Date;
   totalRequests: number;
-  totalDowns: number;
   createdAt: Date;
   updatedAt: Date;
   reload(): Promise<CheckDocument>;
+}
+
+export interface checkReport {
+  status: string;
+  availability: number;
+  outages: number;
+  downtime: number;
+  uptime: number;
+  avgResponseTime: number;
+  lastCheck: Date;
+  history: PingDocument[];
 }

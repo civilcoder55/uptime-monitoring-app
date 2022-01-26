@@ -16,9 +16,12 @@ const PingSchema = new mongoose.Schema(
 );
 
 PingSchema.methods.toJSON = function () {
-  const session = this.toObject();
-  delete session.__v;
-  return session;
+  const ping = this.toObject();
+  delete ping.check;
+  delete ping._id;
+  delete ping.updatedAt;
+  delete ping.__v;
+  return ping;
 };
 
 export default mongoose.model<PingDocument>("Ping", PingSchema);

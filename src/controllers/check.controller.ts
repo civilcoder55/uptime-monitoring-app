@@ -40,6 +40,17 @@ export async function getCheck(req: Request, res: Response) {
   }
 }
 
+export async function getCheckReport(req: Request, res: Response) {
+  try {
+    const userId = res.locals.user.userId;
+    const checkId = req.params.id;
+    const checkReport = await CheckService.getCheckReport(userId, checkId);
+    return res.status(200).json({ data: checkReport });
+  } catch (error: any) {
+    return res.status(error.statusCode || 500).json({ message: error.message || "Internal Server Error." });
+  }
+}
+
 export async function updateCheck(req: Request, res: Response) {
   try {
     const userId = res.locals.user.userId;
