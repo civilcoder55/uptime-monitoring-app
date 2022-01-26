@@ -1,10 +1,9 @@
 import { IClientOptions } from "../interfaces/option.interface";
 import { IClientResponse } from "../interfaces/response.interface";
-import { IClient } from "../interfaces/client.interface";
+import { IClientProvider } from "../interfaces/client.interface";
 import http from "http";
-import logger from "../../../logger";
 
-export class HttpClient implements IClient {
+export class HttpClient implements IClientProvider {
   ping(options: IClientOptions): Promise<IClientResponse> {
     return new Promise((resolve) => {
       const opt: http.RequestOptions = {
@@ -31,20 +30,11 @@ export class HttpClient implements IClient {
           resolve(result);
         })
         .on("error", (error) => {
-          if (!result.responseTime) {
-            const totalTime = process.hrtime(startTime);
-            result.responseTime = totalTime[0] * 1000 + totalTime[1] / 1000000;
-          }
-          logger.error(error, "[-] Failed http request to " + options.host);
           result.error = true;
           result.errorMessage = error.message;
           resolve(result);
         })
         .on("timeout", () => {
-          if (!result.responseTime) {
-            const totalTime = process.hrtime(startTime);
-            result.responseTime = totalTime[0] * 1000 + totalTime[1] / 1000000;
-          }
           result.error = true;
           result.timeout = true;
           resolve(result);

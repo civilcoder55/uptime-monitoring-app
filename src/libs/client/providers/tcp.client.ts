@@ -1,10 +1,9 @@
 import { IClientOptions } from "../interfaces/option.interface";
 import { IClientResponse } from "../interfaces/response.interface";
-import { IClient } from "../interfaces/client.interface";
+import { IClientProvider } from "../interfaces/client.interface";
 import net from "net";
-import logger from "../../../logger";
 
-export class TcpClient implements IClient {
+export class TcpClient implements IClientProvider {
   ping(options: IClientOptions): Promise<IClientResponse> {
     return new Promise((resolve) => {
       const socket = new net.Socket();
@@ -33,11 +32,6 @@ export class TcpClient implements IClient {
           socket.destroy();
         })
         .on("error", (error) => {
-          if (!result.responseTime) {
-            const totalTime = process.hrtime(startTime);
-            result.responseTime = totalTime[0] * 1000 + totalTime[1] / 1000000;
-          }
-          logger.error(error, "[-] Failed tcp connection to host " + options.host + ":" + options.port);
           result.error = true;
           result.errorMessage = error.message;
           socket.destroy();
