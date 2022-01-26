@@ -2,9 +2,9 @@ import { IClientOptions } from "./option.interface";
 import { IClientResponse } from "./response.interface";
 
 /**
- * Interface for client class
+ * Interface for client provider class
  */
-export interface IClient {
+export interface IClientProvider {
   /**
    * ping host and return response object
    * @param {IClientOptions} options
