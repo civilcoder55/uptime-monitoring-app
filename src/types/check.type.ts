@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
-import { PingDocument } from "./ping.type";
-import { UserDocument } from "./user.type";
+import { pingDocument } from "./ping.type";
+import { userDocument } from "./user.type";
 
-export interface CheckDocument extends mongoose.Document {
-  user: UserDocument["_id"];
+export interface checkDocument extends mongoose.Document {
+  user: userDocument["_id"];
   email: string;
   name: string;
   host: string;
@@ -29,7 +29,7 @@ export interface CheckDocument extends mongoose.Document {
   totalRequests: number;
   createdAt: Date;
   updatedAt: Date;
-  reload(): Promise<CheckDocument>;
+  reload(): Promise<checkDocument>;
 }
 
 export interface checkReport {
@@ -40,5 +40,5 @@ export interface checkReport {
   uptime: number;
   avgResponseTime: number;
   lastCheck: Date;
-  history: PingDocument[];
+  history: pingDocument[];
 }

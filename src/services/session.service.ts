@@ -1,12 +1,11 @@
-// import logger from "../logger";
-import UserModel from "../models/user.model";
-import SessionModel from "../models/session.model";
+import userModel from "../models/user.model";
+import sessionModel from "../models/session.model";
 import { signToken, TokenTypes, validateToken } from "../utils/jwt.utils";
-import { UserDocument } from "../types/user.type";
-import { SessionDocument } from "../types/session.type";
+import { userDocument } from "../types/user.type";
+import { sessionDocument } from "../types/session.type";
 
-export async function validateUser(email: string, password: string): Promise<UserDocument> {
-  const user = await UserModel.findOne({ email });
+export async function validateUser(email: string, password: string): Promise<userDocument> {
+  const user = await userModel.findOne({ email });
 
   if (user) {
     const hasValidPassword = await user.validatePassword(password);
@@ -19,14 +18,14 @@ export async function validateUser(email: string, password: string): Promise<Use
   };
 }
 
-export async function createSession(userId: string, userAgent: string, ip: string): Promise<SessionDocument> {
-  const session = await SessionModel.create({ user: userId, userAgent, ip });
+export async function createSession(userId: string, userAgent: string, ip: string): Promise<sessionDocument> {
+  const session = await sessionModel.create({ user: userId, userAgent, ip });
   return session;
 }
 
 export function createTokens(
-  user: UserDocument,
-  session: SessionDocument
+  user: userDocument,
+  session: sessionDocument
 ): { accessToken: string; refreshToken: string } {
   const accessToken = signToken(
     { userId: user._id, email: user.email, sessionId: session._id },
@@ -48,11 +47,11 @@ export async function reIssueAccessToken(refreshToken: string): Promise<string |
 
   if (!sessionId) return false;
 
-  const session = await SessionModel.findById(sessionId);
+  const session = await sessionModel.findById(sessionId);
 
   if (!session) return false;
 
-  const user = await UserModel.findOne({ _id: session.user });
+  const user = await userModel.findOne({ _id: session.user });
 
   if (!user) return false;
 
@@ -61,12 +60,12 @@ export async function reIssueAccessToken(refreshToken: string): Promise<string |
   return accessToken;
 }
 
-export async function getSessions(userId: string): Promise<SessionDocument[]> {
-  return await SessionModel.find({ user: userId });
+export async function getSessions(userId: string): Promise<sessionDocument[]> {
+  return await sessionModel.find({ user: userId });
 }
 
 export async function deleteSession(userId: string, sessionId: string): Promise<void> {
-  const session = await SessionModel.findOne({ _id: sessionId, user: userId });
+  const session = await sessionModel.findOne({ _id: sessionId, user: userId });
   if (!session) {
     throw {
       statusCode: 404,
@@ -78,5 +77,5 @@ export async function deleteSession(userId: string, sessionId: string): Promise<
 }
 
 export async function deleteAllSessions(userId: string): Promise<void> {
-  await SessionModel.deleteMany({ user: userId });
+  await sessionModel.deleteMany({ user: userId });
 }

@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
-import { UserDocument } from "./user.type";
+import { userDocument } from "./user.type";
 
-export interface SessionDocument extends mongoose.Document {
-  user: UserDocument["_id"];
+export interface sessionDocument extends mongoose.Document {
+  user: userDocument["_id"];
   userAgent: string;
   ip: string;
   createdAt: Date;

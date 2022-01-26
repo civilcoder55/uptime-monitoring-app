@@ -1,5 +1,5 @@
 import logger from "../../logger";
-import { UserDocument } from "../../types/user.type";
+import { userDocument } from "../../types/user.type";
 import { IAlert } from "./interfaces/alert.interface";
 import { INotifier } from "./interfaces/notifier.interface";
 
@@ -18,7 +18,7 @@ export class NotificationManager {
    * Method to invoke notify method on notifier class to send actual notification
    * @param {IAlert} alert
    */
-  notifyAll(user: UserDocument, alert: IAlert) {
+  notifyAll(user: userDocument, alert: IAlert) {
     this.notifiers.forEach(function (notifier: INotifier, notifierName: string) {
       try {
         notifier.notify(user, alert);

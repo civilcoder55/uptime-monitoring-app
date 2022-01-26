@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { PingDocument } from "../types/ping.type";
+import { pingDocument } from "../types/ping.type";
 
 const PingSchema = new mongoose.Schema(
   {
@@ -24,4 +24,4 @@ PingSchema.methods.toJSON = function () {
   return ping;
 };
 
-export default mongoose.model<PingDocument>("Ping", PingSchema);
+export default mongoose.model<pingDocument>("Ping", PingSchema);

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
-import { UserDocument } from "../types/user.type";
+import { userDocument } from "../types/user.type";
 
 const UserSchema = new mongoose.Schema(
   {
@@ -35,4 +35,4 @@ UserSchema.methods.validatePassword = async function (inputPassword: string) {
   return bcrypt.compareSync(inputPassword, this.password);
 };
 
-export default mongoose.model<UserDocument>("User", UserSchema);
+export default mongoose.model<userDocument>("User", UserSchema);

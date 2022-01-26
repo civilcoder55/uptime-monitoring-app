@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
-import { CheckDocument } from "./check.type";
+import { checkDocument } from "./check.type";
 
-export interface PingDocument extends mongoose.Document {
-  check: CheckDocument["_id"];
+export interface pingDocument extends mongoose.Document {
+  check: checkDocument["_id"];
   status: string;
   error: boolean;
   errorMessage: string;

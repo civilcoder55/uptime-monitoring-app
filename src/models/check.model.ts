@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { CheckDocument } from "../types/check.type";
+import { checkDocument } from "../types/check.type";
 
 const CheckSchema = new mongoose.Schema(
   {
@@ -53,4 +53,4 @@ CheckSchema.methods.toJSON = function () {
   return check;
 };
 
-export default mongoose.model<CheckDocument>("Check", CheckSchema);
+export default mongoose.model<checkDocument>("Check", CheckSchema);

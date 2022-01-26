@@ -1,5 +1,5 @@
 import EventEmitter from "events";
-import { CheckDocument } from "../../types/check.type";
+import { checkDocument } from "../../types/check.type";
 import logger from "../../logger";
 import { Client } from "../client";
 import PingModel from "../../models/ping.model";
@@ -20,15 +20,15 @@ export class Monitor extends EventEmitter {
   private lastCheck!: Date;
 
   private client: Client;
-  private check: CheckDocument;
+  private check: checkDocument;
   private intervalHandler: NodeJS.Timer | null = null;
 
   /**
    * Monitor class constructor
-   * @param {CheckDocument} check check document you need to monitor
+   * @param {checkDocument} check check document you need to monitor
    * @param {Client} client client instance to manage polling requests
    */
-  constructor(check: CheckDocument, client: Client) {
+  constructor(check: checkDocument, client: Client) {
     super();
     this.initData(check);
     this.client = client;
@@ -38,10 +38,10 @@ export class Monitor extends EventEmitter {
 
   /**
    * Private method to assign check data to monitor instance
-   * @param {CheckDocument} check check document you need to monitor
+   * @param {checkDocument} check check document you need to monitor
    * @returns {void}
    */
-  private initData(check: CheckDocument): void {
+  private initData(check: checkDocument): void {
     this.options = {
       host: check.host,
       protocol: check.protocol,

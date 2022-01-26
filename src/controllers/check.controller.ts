@@ -1,13 +1,13 @@
 import { Request, Response, NextFunction } from "express";
-import { CheckDocument } from "../types/check.type";
-import * as CheckService from "../services/check.service";
+import { checkDocument } from "../types/check.type";
+import * as checkService from "../services/check.service";
 
 export async function createCheck(req: Request, res: Response, next: NextFunction) {
   try {
-    const checkData: CheckDocument = req.body;
+    const checkData: checkDocument = req.body;
     checkData.user = res.locals.user.userId;
     checkData.email = res.locals.user.email;
-    const check = await CheckService.createCheck(checkData);
+    const check = await checkService.createCheck(checkData);
 
     //emit custom event for monitor worker process
     req.app.get("worker").send({ type: "checkCreated", data: { id: check._id } });
@@ -22,7 +22,7 @@ export async function getChecks(req: Request, res: Response, next: NextFunction)
   try {
     const userId = res.locals.user.userId;
     const tags = req.query.tags as string | string[];
-    const checks = await CheckService.getChecks(userId, tags);
+    const checks = await checkService.getChecks(userId, tags);
     return res.status(200).json({ data: checks });
   } catch (error: any) {
     next(error);
@@ -33,7 +33,7 @@ export async function getCheck(req: Request, res: Response, next: NextFunction) 
   try {
     const userId = res.locals.user.userId;
     const checkId = req.params.id;
-    const check = await CheckService.getCheck(userId, checkId);
+    const check = await checkService.getCheck(userId, checkId);
     return res.status(200).json({ data: check });
   } catch (error: any) {
     next(error);
@@ -44,7 +44,7 @@ export async function getCheckReport(req: Request, res: Response, next: NextFunc
   try {
     const userId = res.locals.user.userId;
     const checkId = req.params.id;
-    const checkReport = await CheckService.getCheckReport(userId, checkId);
+    const checkReport = await checkService.getCheckReport(userId, checkId);
     return res.status(200).json({ data: checkReport });
   } catch (error: any) {
     next(error);
@@ -55,8 +55,8 @@ export async function updateCheck(req: Request, res: Response, next: NextFunctio
   try {
     const userId = res.locals.user.userId;
     const checkId = req.params.id;
-    const checkData: CheckDocument = req.body;
-    const check = await CheckService.updateCheck(userId, checkId, checkData);
+    const checkData: checkDocument = req.body;
+    const check = await checkService.updateCheck(userId, checkId, checkData);
 
     //emit custom event for monitor worker process
     req.app.get("worker").send({ type: "checkUpdated", data: { id: check._id } });
@@ -71,7 +71,7 @@ export async function deleteCheck(req: Request, res: Response, next: NextFunctio
   try {
     const userId = res.locals.user.userId;
     const checkId = req.params.id;
-    await CheckService.deleteCheck(userId, checkId);
+    await checkService.deleteCheck(userId, checkId);
 
     //emit custom event for monitor worker process
     req.app.get("worker").send({ type: "checkDeleted", data: { id: checkId } });
@@ -86,7 +86,7 @@ export async function toggleCheckMonitoring(req: Request, res: Response, next: N
   try {
     const userId = res.locals.user.userId;
     const checkId = req.params.id;
-    const check = await CheckService.toggleCheckMonitoring(userId, checkId);
+    const check = await checkService.toggleCheckMonitoring(userId, checkId);
 
     //emit custom event for monitor worker process
     req.app.get("worker").send({ type: "checkUpdated", data: { id: checkId } });

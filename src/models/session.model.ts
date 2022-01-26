@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { SessionDocument } from "../types/session.type";
+import { sessionDocument } from "../types/session.type";
 
 const SessionSchema = new mongoose.Schema(
   {
@@ -17,4 +17,4 @@ SessionSchema.methods.toJSON = function () {
   return session;
 };
 
-export default mongoose.model<SessionDocument>("Session", SessionSchema);
+export default mongoose.model<sessionDocument>("Session", SessionSchema);

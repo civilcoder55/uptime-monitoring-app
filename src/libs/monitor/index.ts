@@ -1,6 +1,6 @@
 import logger from "../../logger";
 import checkModel from "../../models/check.model";
-import { CheckDocument } from "../../types/check.type";
+import { checkDocument } from "../../types/check.type";
 import { Client } from "../client";
 import { NotificationManager } from "../notifier";
 import { MailNotifier } from "../notifier/providers/mail.notifier";
@@ -27,7 +27,7 @@ class MonitorManager {
     });
   }
 
-  initMonitor(check: CheckDocument) {
+  initMonitor(check: checkDocument) {
     // make new monitor instance from check
     const monitor = new Monitor(check, client);
 
