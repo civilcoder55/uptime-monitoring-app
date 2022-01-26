@@ -4,7 +4,6 @@ import { checkDocument } from "../types/check.type";
 const CheckSchema = new mongoose.Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, index: true },
-    email: { type: String },
     name: { type: String, required: true },
     host: { type: String, required: true },
     port: { type: Number },

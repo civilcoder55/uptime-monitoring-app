@@ -4,7 +4,6 @@ import { userDocument } from "./user.type";
 
 export interface checkDocument extends mongoose.Document {
   user: userDocument["_id"];
-  email: string;
   name: string;
   host: string;
   port: number;

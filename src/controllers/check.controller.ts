@@ -6,7 +6,6 @@ export async function createCheck(req: Request, res: Response, next: NextFunctio
   try {
     const checkData: checkDocument = req.body;
     checkData.user = res.locals.user.userId;
-    checkData.email = res.locals.user.email;
     const check = await checkService.createCheck(checkData);
 
     //emit custom event for monitor worker process
