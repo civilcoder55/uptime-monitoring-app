@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="img1.png">
+  <img src="logo.png">
 
   <h3 align="center">Uptime monitoring app</h3>
 
@@ -8,46 +8,53 @@
   </p>
 </p>
 
-
-
 ## Usage
 
 1. Clone the repo
 
-  ```sh
-  git clone https://github.com/civilcoder55/uptime-monitoring-app.git
-  ```
+```sh
+git clone https://github.com/civilcoder55/uptime-monitoring-app.git
+```
 
 2. update env file with proper variables
 
-  ```sh
-  cp .env.example .env
-  ```
+```sh
+cp .env.example .env
+```
 
 3. build images and run containers
 
-  ```sh
-  sudo docker-compose up -d
-  ```
+```sh
+sudo docker-compose up -d
+```
 
 4. access api at
 
-  ```sh
-  http://localhost:3000
-  ```
+```sh
+http://localhost:3000/api/v1
+```
 
-5. access docker logs
+5. access api docs at
 
-  ```sh
-  docker logs -f uptime-app-nodejs
-  ```
+```sh
+http://localhost:3000/api/v1/docs
+```
+
+6. access docker logs
+
+```sh
+docker logs -f uptime-app-nodejs
+```
 
 ## screens
 
 <p align="center">
-  <img src="img2.png" >
+  <img src="img1.png" >
 </p>
 
+<p align="center">
+  <img src="img2.png" >
+</p>
 
 ## todo
 
@@ -63,8 +70,6 @@
 - [ ] Add pushover notifier
 - [ ] Add more unit tests
 - [ ] Add api tests
-
-
 
 ## Backend Assessment
 
