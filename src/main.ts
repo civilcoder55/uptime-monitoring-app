@@ -15,6 +15,8 @@ import refresherMiddleware from "./middlewares/refresher.middleware";
 import cluster from "cluster";
 import monitorManager from "./libs/monitor";
 import config from "./config";
+import notFoundHandlerMiddleware from "./middlewares/notFoundHandler.middleware";
+import errorHandlerMiddleware from "./middlewares/errorHandler.middleware";
 
 /**
  * connect to database
@@ -42,6 +44,13 @@ if (cluster.isPrimary) {
    * Register app routes
    */
   app.use("/api/v1", routes);
+
+  /**
+   * Global error handlers
+   */
+  app.use(notFoundHandlerMiddleware); // for not exists routes
+  app.use(errorHandlerMiddleware); // for handling errors
+
   /**
    * start server
    */
