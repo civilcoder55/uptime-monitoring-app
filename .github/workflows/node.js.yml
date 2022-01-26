@@ -23,4 +23,5 @@ jobs:
     - run: npm test
     - run: npm run build
       env:
+        ACCESS_TOKEN_TTL: '10m'
         CI: true
