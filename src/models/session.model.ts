@@ -14,6 +14,7 @@ SessionSchema.methods.toJSON = function () {
   const session = this.toObject();
   delete session.__v;
   delete session.user;
+  delete session.updatedAt;
   return session;
 };
 
