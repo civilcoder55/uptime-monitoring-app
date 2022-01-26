@@ -47,7 +47,7 @@ class MonitorManager {
     // fetch the check
     const check = await checkModel.findOne({ _id: id }).populate("user");
 
-    logger.info("new check added");
+    logger.info(`[+] Check with id: ${id} has been added`);
 
     // init the check monitor
     this.initMonitor(check);
@@ -58,7 +58,7 @@ class MonitorManager {
     if (this.monitors.has(id)) {
       // get the check monitor from exists monitors
       const monitor = this.monitors.get(id) as Monitor;
-      logger.info("check updated");
+      logger.info(`[+] Check with id: ${id} has been updated`);
       //update monitor data
       monitor.updateData();
     }
@@ -68,7 +68,7 @@ class MonitorManager {
     if (this.monitors.has(id)) {
       // get the check monitor from exists monitors
       const monitor = this.monitors.get(id) as Monitor;
-      logger.info("check deleted");
+      logger.info(`[+] Check with id: ${id} has been deleted`);
       //stop monitor and delete it from exists monitors
       monitor.stop();
       this.monitors.delete(id);

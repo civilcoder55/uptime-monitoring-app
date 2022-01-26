@@ -56,7 +56,7 @@ if (cluster.isPrimary) {
   app.set("worker", worker);
 
   cluster.on("exit", (worker) => {
-    console.log(`worker ${worker.process.pid} died`);
+    logger.error(`[x] Worker ${worker.process.pid} died`);
   });
 } else {
   logger.info(`[*] Monitor running on pid ${process.pid}`);

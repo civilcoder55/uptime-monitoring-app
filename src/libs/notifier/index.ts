@@ -22,9 +22,9 @@ export class NotificationManager {
     this.notifiers.forEach(function (notifier: INotifier, notifierName: string) {
       try {
         notifier.notify(user, alert);
-        logger.info("notification sent from " + notifierName);
+        logger.info(`[^] Notification sent from ${notifierName}`);
       } catch (error: any) {
-        logger.info(error, " Error while send " + notifierName + " Notification");
+        logger.info(error, `[x] ${notifierName} notification failed`);
       }
     });
   }

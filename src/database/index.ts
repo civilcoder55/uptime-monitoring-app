@@ -6,10 +6,10 @@ export const connect = async () => {
   return mongoose
     .connect(config.MONGO_URI)
     .then(() => {
-      logger.info("[*] Mongo DB connected successfully.");
+      logger.info("[*] Mongodb connected successfully.");
     })
     .catch((error) => {
-      logger.error(error, "[x] Mongo DB connection failed.");
+      logger.error(error, "[x] Mongodb connection failed.");
       process.exit(1);
     });
 };

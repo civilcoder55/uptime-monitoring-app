@@ -37,7 +37,7 @@ export class TcpClient implements IClient {
             const totalTime = process.hrtime(startTime);
             result.responseTime = totalTime[0] * 1000 + totalTime[1] / 1000000;
           }
-          logger.error(error, "Error tcp connection to host " + options.host + ":" + options.port);
+          logger.error(error, "[-] Failed tcp connection to host " + options.host + ":" + options.port);
           result.error = true;
           result.errorMessage = error.message;
           socket.destroy();

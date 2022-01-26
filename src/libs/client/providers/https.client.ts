@@ -37,7 +37,7 @@ export class HttpsClient implements IClient {
             const totalTime = process.hrtime(startTime);
             result.responseTime = totalTime[0] * 1000 + totalTime[1] / 1000000;
           }
-          logger.error(error, "Error https request to " + options.host);
+          logger.error(error, "[-] Failed https request to " + options.host);
           result.error = true;
           result.errorMessage = error.message;
           resolve(result);
