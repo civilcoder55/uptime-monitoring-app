@@ -78,5 +78,5 @@ export async function deleteSession(userId: string, sessionId: string): Promise<
 }
 
 export async function deleteAllSessions(userId: string): Promise<void> {
-  return await SessionModel.remove({ user: userId });
+  await SessionModel.deleteMany({ user: userId });
 }
