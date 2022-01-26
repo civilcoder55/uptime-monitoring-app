@@ -70,3 +70,18 @@ export async function deleteCheck(req: Request, res: Response) {
     return res.status(error.statusCode || 500).json({ message: error.message || "Internal Server Error." });
   }
 }
+
+export async function toggleCheckMonitoring(req: Request, res: Response) {
+  try {
+    const userId = res.locals.user.userId;
+    const checkId = req.params.id;
+    const check = await CheckService.toggleCheckMonitoring(userId, checkId);
+
+    //emit custom event for monitor worker process
+    req.app.get("worker").send({ type: "checkUpdated", data: { id: checkId } });
+
+    return res.status(200).json({ message: `Check monitoring ${check.paused ? "paused" : "resumed"} successfully.` });
+  } catch (error: any) {
+    return res.status(error.statusCode || 500).json({ message: error.message || "Internal Server Error." });
+  }
+}

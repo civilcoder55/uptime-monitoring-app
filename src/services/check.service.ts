@@ -33,4 +33,12 @@ export async function updateCheck(userId: string, checkId: string, checkData: Ch
 export async function deleteCheck(userId: string, checkId: string): Promise<void> {
   const check = await getCheck(userId, checkId);
   await check.remove();
+  await checkModel.deleteMany({ check: checkId, user: userId });
+}
+
+export async function toggleCheckMonitoring(userId: string, checkId: string): Promise<CheckDocument> {
+  const check = await getCheck(userId, checkId);
+  check.paused = !check.paused;
+  await check.save();
+  return check;
 }

@@ -10,6 +10,7 @@ router.post("/checks", guardMiddleware, validatorMiddleware(createCheckSchema), 
 router.get("/checks", guardMiddleware, CheckController.getChecks);
 router.get("/checks/:id", guardMiddleware, CheckController.getCheck);
 router.put("/checks/:id", guardMiddleware, validatorMiddleware(createCheckSchema), CheckController.updateCheck);
+router.patch("/checks/:id/toggle", guardMiddleware, CheckController.toggleCheckMonitoring);
 router.delete("/checks/:id", guardMiddleware, CheckController.deleteCheck);
 
 export default router;
