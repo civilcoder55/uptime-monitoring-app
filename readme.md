@@ -48,6 +48,12 @@ docker logs -f uptime-app-nodejs
 
 ## screens
 
+
+<p align="center">
+  <img src="diagram.jpg" >
+</p>
+
+
 <p align="center">
   <img src="img1.png" >
 </p>
