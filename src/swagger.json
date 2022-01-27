@@ -248,6 +248,17 @@
       "get": {
         "tags": ["Sessions"],
         "summary": "Get all user sessions",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "page number",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful operation",
@@ -260,6 +271,10 @@
                       "items": {
                         "$ref": "#/components/schemas/Session"
                       }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Pagination"
                     }
                   }
                 }
@@ -350,6 +365,26 @@
       "get": {
         "tags": ["Checks"],
         "summary": "Get list of user checks",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "page number",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "tags",
+            "in": "query",
+            "description": "filter by tags",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful operation",
@@ -362,6 +397,10 @@
                       "items": {
                         "$ref": "#/components/schemas/Check"
                       }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Pagination"
                     }
                   }
                 }
@@ -680,7 +719,7 @@
   "components": {
     "schemas": {
       "User": {
-        "title": "UserModel",
+        "title": "User Model",
         "properties": {
           "_id": {
             "description": "User id",
@@ -717,6 +756,7 @@
         "type": "object"
       },
       "Session": {
+        "title": "Session Model",
         "properties": {
           "_id": {
             "description": "Session id",
@@ -742,8 +782,13 @@
         "type": "object"
       },
       "Check": {
-        "title": "CheckModel",
+        "title": "Check Model",
         "properties": {
+          "_id": {
+            "description": "Check id",
+            "type": "string",
+            "example": "61eebb148bf55b4ca50db549"
+          },
           "name": {
             "title": "name",
             "description": "The name of the check.",
@@ -821,12 +866,28 @@
             "description": " A webhook URL to receive a notification on (optional).",
             "type": "string",
             "example": "https://mywebhook.com/down"
+          },
+          "paused": {
+            "title": "paused",
+            "description": "A flag to show the state of check monitoring .",
+            "type": "boolean",
+            "example": false
+          },
+          "createdAt": {
+            "description": "Check creation date",
+            "type": "string",
+            "example": "2022-01-24T14:43:32.337Z"
+          },
+          "updatedAt": {
+            "description": "Check update date",
+            "type": "string",
+            "example": "2022-01-24T14:43:32.337Z"
           }
         },
         "type": "object"
       },
       "Report": {
-        "title": "ReportModel",
+        "title": "Report Model",
         "properties": {
           "status": {
             "title": "status",
@@ -965,6 +1026,42 @@
             "description": " A webhook URL to receive a notification on (optional).",
             "type": "string",
             "example": "https://mywebhook.com/down"
+          }
+        },
+        "type": "object"
+      },
+      "Pagination": {
+        "title": "Pagination Model",
+        "properties": {
+          "totalPages": {
+            "title": "totalPages",
+            "description": "The total pages of check documents.",
+            "type": "integer",
+            "example": 3
+          },
+          "hasNext": {
+            "title": "hasNext",
+            "description": "Is there next pages.",
+            "type": "boolean",
+            "example": true
+          },
+          "hasPerv": {
+            "title": "hasPerv",
+            "description": "Is there previous pages.",
+            "type": "boolean",
+            "example": false
+          },
+          "pageNum": {
+            "title": "pageNum",
+            "description": "The current page number.",
+            "type": "integer",
+            "example": 1
+          },
+          "totalRecords": {
+            "title": "totalRecords",
+            "description": "Total documents number.",
+            "type": "integer",
+            "example": 27
           }
         },
         "type": "object"
