@@ -52,7 +52,7 @@ docker logs -f uptime-app-nodejs
 <img src="screenshots/img3.png" >
 </p>
 
-2. register your notifier with notificationManager inside ./src/libs/monitor/index.js and your notifier will invoked when any alert happend
+2. register your notifier with notificationManager inside ./src/libs/monitor/index.ts and your notifier will invoked when any alert happend
 <p align="center">
 <img src="screenshots/img4.png" >
 </p>
@@ -79,11 +79,11 @@ docker logs -f uptime-app-nodejs
 - [x] Stateless authentication using JWT.
 - [x] Users can create a check to monitor a given URL if it is up or down.
 - [x] Users can edit, pause, or delete their checks if needed.
-- [ ] Users may receive a notification on a webhook URL by sending HTTP POST request whenever a check goes down or up.
+- [x] Users may receive a notification on a webhook URL by sending HTTP POST request whenever a check goes down or up.
 - [x] Users should receive email alerts whenever a check goes down or up.
 - [x] Users can get detailed uptime reports about their checks availability, average response time, and total uptime/downtime.
 - [x] Users can group their checks by tags and get reports by tag.
-- [ ] Add pagination
+- [x] Add pagination
 - [ ] Add pushover notifier
 - [ ] Add more unit tests
 - [ ] Add api tests
