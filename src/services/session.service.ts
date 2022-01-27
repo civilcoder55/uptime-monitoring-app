@@ -3,6 +3,7 @@ import sessionModel from "../models/session.model";
 import { signToken, TokenTypes, validateToken } from "../utils/jwt.utils";
 import { userDocument } from "../types/user.type";
 import { sessionDocument } from "../types/session.type";
+import { paginator } from "../utils/paginator.utils";
 
 export async function validateUser(email: string, password: string): Promise<userDocument> {
   const user = await userModel.findOne({ email });
@@ -60,8 +61,8 @@ export async function reIssueAccessToken(refreshToken: string): Promise<string |
   return accessToken;
 }
 
-export async function getSessions(userId: string): Promise<sessionDocument[]> {
-  return await sessionModel.find({ user: userId });
+export async function getSessions(userId: string, page: string) {
+  return await paginator(sessionModel, page, { user: userId });
 }
 
 export async function deleteSession(userId: string, sessionId: string): Promise<void> {

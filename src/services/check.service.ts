@@ -1,21 +1,21 @@
 import { checkDocument, checkReport } from "../types/check.type";
 import checkModel from "../models/check.model";
 import pingModel from "../models/ping.model";
+import { paginator } from "../utils/paginator.utils";
 
 export async function createCheck(checkData: checkDocument): Promise<checkDocument> {
   return await checkModel.create(checkData);
 }
 
-export async function getChecks(userId: string, tags: string | string[]): Promise<checkDocument[]> {
+export async function getChecks(userId: string, tags: string | string[], page: string) {
   if (tags) {
-    return await checkModel.find({ user: userId, tags: { $all: tags } });
+    return await paginator(checkModel, page, { user: userId, tags: { $all: tags } });
   }
-  return await checkModel.find({ user: userId });
+  return await paginator(checkModel, page, { user: userId });
 }
 
 export async function getCheck(userId: string, checkId: string): Promise<checkDocument> {
   const check = await checkModel.findOne({ _id: checkId, user: userId });
-
   if (!check) {
     throw {
       statusCode: 404,
@@ -35,7 +35,7 @@ export async function getCheckReport(userId: string, checkId: string): Promise<c
     };
   }
 
-  const pings = await pingModel.find({ check: check._id }).skip(0).limit(10);
+  const pings = await pingModel.find({ check: check._id }).sort('-createdAt').skip(0).limit(10);
   const checkReport = {
     status: check.status,
     availability: check.availability,

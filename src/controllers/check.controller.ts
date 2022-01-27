@@ -21,8 +21,9 @@ export async function getChecks(req: Request, res: Response, next: NextFunction)
   try {
     const userId = res.locals.user.userId;
     const tags = req.query.tags as string | string[];
-    const checks = await checkService.getChecks(userId, tags);
-    return res.status(200).json({ data: checks });
+    const page = req.query.page as string;
+    const paginatedChecks = await checkService.getChecks(userId, tags, page);
+    return res.status(200).json({ data: paginatedChecks.records, pagination: paginatedChecks.pagination });
   } catch (error: any) {
     next(error);
   }

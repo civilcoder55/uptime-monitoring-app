@@ -22,8 +22,9 @@ export async function createSession(req: Request, res: Response, next: NextFunct
 export async function getSessions(req: Request, res: Response, next: NextFunction) {
   try {
     const userId = res.locals.user.userId;
-    const sessions = await sessionService.getSessions(userId);
-    return res.status(200).json({ data: sessions });
+    const page = req.query.page as string;
+    const paginatedSessions = await sessionService.getSessions(userId, page);
+    return res.status(200).json({ data: paginatedSessions.records, pagination: paginatedSessions.pagination });
   } catch (error: any) {
     next(error);
   }
