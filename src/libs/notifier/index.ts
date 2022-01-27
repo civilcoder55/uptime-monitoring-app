@@ -1,5 +1,5 @@
 import logger from "../../logger";
-import { userDocument } from "../../types/user.type";
+import { checkDocument } from "../../types/check.type";
 import { IAlert } from "./interfaces/alert.interface";
 import { INotifier } from "./interfaces/notifier.interface";
 
@@ -18,10 +18,10 @@ export class NotificationManager {
    * Method to invoke notify method on notifier class to send actual notification
    * @param {IAlert} alert
    */
-  notifyAll(user: userDocument, alert: IAlert) {
+  notifyAll(check: checkDocument, alert: IAlert) {
     this.notifiers.forEach(function (notifier: INotifier, notifierName: string) {
       try {
-        notifier.notify(user, alert);
+        notifier.notify(check, alert);
         logger.info(`[^] Notification sent from ${notifierName}`);
       } catch (error: any) {
         logger.info(error, `[x] ${notifierName} notification failed`);

@@ -1,4 +1,4 @@
-import { userDocument } from "../../../types/user.type";
+import { checkDocument } from "../../../types/check.type";
 import { IAlert } from "./alert.interface";
 
 /**
@@ -10,5 +10,5 @@ export interface INotifier {
    * @param {userDocument} user
    * @param {IAlert} alert
    */
-  notify(user: userDocument, alert: IAlert): void;
+  notify(check: checkDocument, alert: IAlert): void;
 }

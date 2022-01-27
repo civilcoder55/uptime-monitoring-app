@@ -1,5 +1,5 @@
 import config from "../../../config";
-import { userDocument } from "../../../types/user.type";
+import { checkDocument } from "../../../types/check.type";
 import { sendMail } from "../../../utils/mailer.utils";
 import { AlertTypes, IAlert } from "../interfaces/alert.interface";
 import { INotifier } from "../interfaces/notifier.interface";
@@ -55,9 +55,9 @@ export class MailNotifier implements INotifier {
     return mail;
   }
 
-  notify(user: userDocument, alert: IAlert): void {
-    if (user.email) {
-      const alertEmail = this.makeMail(user.email, alert);
+  notify(check: checkDocument, alert: IAlert): void {
+    if (check.user.email) {
+      const alertEmail = this.makeMail(check.user.email, alert);
       sendMail(alertEmail);
     }
   }
