@@ -49,6 +49,14 @@ CheckSchema.methods.toJSON = function () {
   const check = this.toObject();
   delete check.__v;
   delete check.user;
+  delete check.status;
+  delete check.availability;
+  delete check.outages;
+  delete check.downtime;
+  delete check.uptime;
+  delete check.avgResponseTime;
+  delete check.lastCheck;
+  delete check.totalRequests;
   return check;
 };
 
