@@ -4,7 +4,7 @@ import { checkDocument } from "../../types/check.type";
 import { Client } from "../client";
 import { NotificationManager } from "../notifier";
 import { MailNotifier } from "../notifier/providers/mail.notifier";
-import { SmsNotifier } from "../notifier/providers/sms.notifier";
+import { webhookNotifier } from "../notifier/providers/webhook.notifier";
 import { Monitor } from "./monitor";
 
 const client = new Client();
@@ -12,7 +12,7 @@ const client = new Client();
 const notificationManager = new NotificationManager();
 
 notificationManager.use("mail", new MailNotifier());
-notificationManager.use("sms", new SmsNotifier());
+notificationManager.use("webhook", new webhookNotifier());
 
 class MonitorManager {
   private monitors: Map<string, Monitor> = new Map();
@@ -36,7 +36,7 @@ class MonitorManager {
 
     // register notification manager for every monitor
     monitor.on("alert", (alert) => {
-      notificationManager.notifyAll(check.user, alert);
+      notificationManager.notifyAll(check, alert);
     });
 
     // start monitor instance
