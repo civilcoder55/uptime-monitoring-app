@@ -7,7 +7,7 @@ import { IAlert } from "./alert.interface";
 export interface INotifier {
   /**
    * notify method to send alert to recipient
-   * @param {userDocument} user
+   * @param {checkDocument} check
    * @param {IAlert} alert
    */
   notify(check: checkDocument, alert: IAlert): void;
