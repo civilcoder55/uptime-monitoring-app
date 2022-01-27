@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="logo.png">
+  <img src="screenshots/logo.png">
 
   <h3 align="center">Uptime monitoring app</h3>
 
@@ -45,21 +45,32 @@ http://localhost:3000/api/v1/docs
 ```sh
 docker logs -f uptime-app-nodejs
 ```
+## to add notifiers 
+
+1. create your notifier class that implements INotifier interface
+<p align="center">
+<img src="screenshots/img3.png" >
+</p>
+
+2. register your notifier with notificationManager inside ./src/libs/monitor/index.js and your notifier will invoked when any alert happend
+<p align="center">
+<img src="screenshots/img4.png" >
+</p>
 
 ## screens
 
 
 <p align="center">
-  <img src="diagram.jpg" >
+  <img src="screenshots/diagram.jpg" >
 </p>
 
 
 <p align="center">
-  <img src="img1.png" >
+  <img src="screenshots/img1.png" >
 </p>
 
 <p align="center">
-  <img src="img2.png" >
+  <img src="screenshots/img2.png" >
 </p>
 
 ## todo
