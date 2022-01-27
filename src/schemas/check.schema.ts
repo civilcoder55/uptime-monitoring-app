@@ -18,8 +18,8 @@ export const createCheckSchema = object({
       .min(60, "interval must be greater than or equal 60 seconds"),
     threshold: number().typeError("threshold field must be number").min(1, "threshold must be greater than or equal 1"),
     webhook: string().matches(
-      /(http(s)?:\/\/)(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
-      "webhook field must be correct url !"
+      /(https?:\/\/)(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
+      "webhook field must be correct https url !"
     ),
 
     path: string().typeError("path field must be string"),
